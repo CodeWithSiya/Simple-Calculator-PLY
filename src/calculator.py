@@ -30,7 +30,7 @@ def t_FLOAT(t):
     return t
 
 def t_INT(t):
-    r'\d+' 
+    r'-?\d+' 
     t.value = int(t.value)
     return t
 
@@ -58,7 +58,9 @@ def p_calc(p):
          | var_assign
          | empty
     '''
-    print(run(p[1]))
+    value = run(p[1])
+    if value != None:
+        print(value)
 
 def p_var_assign(p):
     '''
@@ -110,7 +112,7 @@ def run(p):
         elif p[0] == '*':
             return run(p[1]) * run(p[2])
         elif p[0] == '/':
-            return run(p[1]) * run(p[2])
+            return run(p[1]) / run(p[2])
         elif p[0] == '=':
             env[p[1]] = run(p[2])
         elif p[0] == 'var':
