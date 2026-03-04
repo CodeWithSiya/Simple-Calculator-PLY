@@ -45,10 +45,42 @@ def t_error(t):
 
 lexer = lex.lex()
 
-lexer.input("num = 1.34")
+# Defining productions for the parsing step.
+def p_calc(p):
+    '''
+    calc : expression
+         | empty
+    '''
+    print(p[1])
 
+def p_expression(p):
+    '''
+    expression : expression MULTIPLY expression
+               | expression DIVIDE expression
+               | expression PLUS expression
+               | expression MINUS expression
+    '''
+    p[0] = (p[2], p[1], p[3])
+
+def p_expression_int_float(p):
+    '''
+    expression : INT
+               | FLOAT
+    '''
+    p[0] = p[1]
+
+def p_empty(p):
+    '''
+    empty :
+    '''
+    p[0] = None
+
+parser = yacc.yacc()
+
+print("Welcome to the PLY calculator!")
 while True:
-    token = lexer.token()
-    if not token:
+    try:
+        s = input("Enter a valid expression:\n")
+    except EOFError:
         break
-    print(token)
+    parser.parse(s)
