@@ -97,7 +97,10 @@ def p_empty(p):
 def p_error(p):
     print("Syntax error found!")
 
-# Execute the calculator actions (recursive).
+parser = yacc.yacc()
+env = {}
+
+# Execute the calculator actions.
 def run(p):
     if type(p) == tuple:
         if p[0] == '+':
@@ -108,12 +111,18 @@ def run(p):
             return run(p[1]) * run(p[2])
         elif p[0] == '/':
             return run(p[1]) * run(p[2])
+        elif p[0] == '=':
+            env[p[1]] = run(p[2])
+        elif p[0] == 'var':
+            if p[1] not in env:
+                print(f"Undeclared variable '{p[1]}'")
+            else:
+                return env[p[1]]
     else:
         return p
 
-parser = yacc.yacc()
-
 print("Welcome to the PLY calculator!")
+
 while True:
     try:
         s = input(">> ")
